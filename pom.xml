@@ -87,6 +87,13 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>local-repository</id>
+            <url>file://${basedir}/lib</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
             <plugin>
