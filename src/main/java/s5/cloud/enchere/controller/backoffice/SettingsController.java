@@ -23,9 +23,6 @@ public class SettingsController {
     @GetMapping("/settings")
     public ResponseEntity<Object> getSettings(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse) {
         try {
-            if (tokenService.hasToken(headers, httpResponse) == null) {
-                throw new IllegalArgumentException("Invalid token");
-            }
             return ResponseEntity.ok().body(new Success(settingsService.getAllSettings()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,7 +31,8 @@ public class SettingsController {
     }
 
     @PutMapping("/setting/{id}")
-    public ResponseEntity<Object> updateSetting(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse, @PathVariable Integer id, @RequestBody Settings requestSettings) {
+    public ResponseEntity<Object> updateSetting(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse,
+            @PathVariable Integer id, @RequestBody Settings requestSettings) {
         try {
             if (tokenService.hasToken(headers, httpResponse) == null) {
                 throw new IllegalArgumentException("Invalid token");

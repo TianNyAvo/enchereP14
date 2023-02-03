@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "718651975053",
+    "project_id": "enchere-notification",
+    "storage_bucket": "enchere-notification.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718651975053:android:b7dab0d7c4d0222c7089c4",
+        "android_client_info": {
+          "package_name": "s5.cloud.enchere"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "718651975053-90mq48sh166gh3b2j6g62cbll89lm2eq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD99l6_g0I0E9fa2e4V-oHk9JndO2iWlqo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "718651975053-90mq48sh166gh3b2j6g62cbll89lm2eq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

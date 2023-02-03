@@ -1,7 +1,8 @@
 package s5.cloud.enchere.model.recharge;
 
-
 import java.sql.Timestamp;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,30 +18,31 @@ import s5.cloud.enchere.model.login.Users;
 @Entity
 public class Account extends HasId {
      @ManyToOne
-     @JoinColumn(name="movement_type")
+     @JoinColumn(name = "movement_type")
      private MovementType type;
+
      private Double amount;
 
-     @Column(name="date_movement")
+     @Column(name = "date_movement")
      private Timestamp dateMovement;
 
-     @Column(name="administrator_id")
+     @Column(name = "administrator_id")
      private Integer administratorId;
 
-     @Column(name="validation_date")
+     @Column(name = "validation_date")
      private Timestamp validationDate;
 
-     @Column(name="auction_id")
+     @Column(name = "auction_id")
      private Integer auctionId;
 
      @ManyToOne
-     @JoinColumn(name="customer_id")
+     @JoinColumn(name = "customer_id")
      private Users customer;
-   
-     public void setAmount(Double am)throws Exception{
-          if(am==null || am<0)
+
+     public void setAmount(Double am) throws Exception {
+          if (am == null || am < 0)
                throw new Exception("Amount must be positive");
-          this.amount=am;
+          this.amount = am;
      }
-     
+
 }

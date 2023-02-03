@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.Setter;
 import s5.cloud.enchere.exception.CustomException;
 import s5.cloud.enchere.util.FormatPhoto;
+
 @Setter
 @Getter
 @Document("galerie")
@@ -23,11 +24,12 @@ public class Galerie {
      @Field("bytes")
      private String bytes;
 
-     public void setFormat(String format)throws CustomException{
-          for(String s:FormatPhoto.listeFormat){
-               if(s.equals(format.toLowerCase())) this.format=s;
+     public void setFormat(String format) throws CustomException {
+          for (String s : FormatPhoto.listeFormat) {
+               if (s.equals(format.toLowerCase()))
+                    this.format = s;
           }
-          if(this.format==null){
+          if (this.format == null) {
                throw new CustomException("format photo non valide");
           }
      }

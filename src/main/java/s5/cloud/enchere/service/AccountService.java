@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ import s5.cloud.enchere.service.common.CrudService;
 import org.springframework.scheduling.annotation.Scheduled;
 
 @Service
-public class AccountService extends CrudService<Account, AccountRepo>{
+public class AccountService extends CrudService<Account, AccountRepo> {
      @Autowired
      private VAccountAvailableRepo vAccountAvailableRepo;
 
@@ -29,9 +30,12 @@ public class AccountService extends CrudService<Account, AccountRepo>{
      public AccountService(AccountRepo repo) {
           super(repo);
      }
-     public Account recharger(Account account)throws CustomException {
-          if(account.getCustomer()==null || account.getCustomer().getId()==null)
+
+     public Account recharger(Account account) throws CustomException {
+          if (account.getCustomer() == null || account.getCustomer().getId() == null)
                throw new CustomException("Customer is required");
+          if (account.getAmount() <= 0)
+               throw new CustomException("Amount must be greater than 0");
           account.setType(new MovementType(1));
           account.setDateMovement(Timestamp.valueOf(LocalDateTime.now()));
           account.setAdministratorId(null);
@@ -39,31 +43,35 @@ public class AccountService extends CrudService<Account, AccountRepo>{
           account.setValidationDate(null);
           return super.create(account);
      }
-     public List<Account> historiqueValide(Integer customerId)throws CustomException {
-          return repo.findByCustomerIdValid(customerId);
+
+     public List<Account> historiqueValide(Integer customerId) throws CustomException {
+          List<Account> liste = repo.findByCustomerIdValid(customerId);
+          for (Account a : liste) {
+               Hibernate.initialize(a.getType());
+          }
+          return liste;
      }
-     public VAccountAvailable stateAccount(Integer customerId)throws CustomException {
+
+     public VAccountAvailable stateAccount(Integer customerId) throws CustomException {
           return vAccountAvailableRepo.findByCustomerId(customerId);
      }
 
-     
+     public List<NAccount> getRefundRequests() throws CustomException {
+          return nAccountRepo.getRefundRequests();
+     }
 
-    public List<NAccount> getRefundRequests() throws CustomException {
-        return nAccountRepo.getRefundRequests();
-    }
+     public void updateAccount(NAccount account) throws CustomException {
+          nAccountRepo.save(account);
+     }
 
-    public void updateAccount(NAccount account) throws CustomException {
-        nAccountRepo.save(account);
-    }
+     public void acceptRefundRequest(Integer admin_id, Integer adminId) {
+          NAccount account = nAccountRepo.findById(adminId).get();
+          account.setValidation_Date(Timestamp.valueOf(LocalDateTime.now()));
+          account.setAdministrator_Id(admin_id);
+          nAccountRepo.save(account);
+     }
 
-    public void acceptRefundRequest(Integer admin_id, Integer adminId) {
-        NAccount account = nAccountRepo.findById(adminId).get();
-        account.setValidation_Date(Timestamp.valueOf(LocalDateTime.now()));
-        account.setAdministrator_Id(admin_id);
-        nAccountRepo.save(account);
-    }
-
-    public List<NAccount> getAcceptedRefundRequests() throws CustomException {
-        return nAccountRepo.getAcceptedRefundRequests();
-    }
+     public List<NAccount> getAcceptedRefundRequests() throws CustomException {
+          return nAccountRepo.getAcceptedRefundRequests();
+     }
 }

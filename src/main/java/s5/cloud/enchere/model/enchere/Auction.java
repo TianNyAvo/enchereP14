@@ -26,12 +26,12 @@ import s5.cloud.enchere.model.login.Users;
 @Entity
 @Setter
 @Getter
-//@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+// @Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
 public class Auction extends HasId {
-     @Column(name="start_date")
+     @Column(name = "start_date")
      private Timestamp startDate;
 
-     @Column(name="end_date")
+     @Column(name = "end_date")
      private Timestamp endDate;
 
      private String title;
@@ -41,17 +41,18 @@ public class Auction extends HasId {
      @ManyToOne
      private Category category;
 
-     @Column(name="min_price")
+     @Column(name = "min_price")
      private Double minPrice;
 
      @ManyToOne
      private Users seller;
 
      @Transient
+     @JsonProperty(value = "operation")
      private List<AuctionOperation> operation;
 
      @Transient
-     @JsonProperty(value="galerie")
-     private List<Galerie>galerie;
+     @JsonProperty(value = "galerie")
+     private List<Galerie> galerie;
 
 }

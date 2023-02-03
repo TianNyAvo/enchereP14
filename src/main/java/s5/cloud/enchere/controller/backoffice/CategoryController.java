@@ -16,7 +16,6 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final TokenService tokenService;
 
-
     @Autowired
     public CategoryController(CategoryService categoryService, TokenService tokenService) {
         this.categoryService = categoryService;
@@ -26,9 +25,11 @@ public class CategoryController {
     @GetMapping("/categories")
     public ResponseEntity<Object> getCategories(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse) {
         try {
-            if(tokenService.hasToken(headers,httpResponse)==null){
-                throw new IllegalArgumentException("Invalid token");
-            }
+            /*
+             * if(tokenService.hasToken(headers,httpResponse)==null){
+             * throw new IllegalArgumentException("Invalid token");
+             * }
+             */
             return ResponseEntity.ok().body(new Success(categoryService.getAllCategories()));
         } catch (Exception e) {
             e.printStackTrace();
@@ -37,9 +38,10 @@ public class CategoryController {
     }
 
     @GetMapping("/category/{id}")
-    public ResponseEntity<Object> getCategoryById(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse, @PathVariable Integer id) {
+    public ResponseEntity<Object> getCategoryById(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse,
+            @PathVariable Integer id) {
         try {
-            if(tokenService.hasToken(headers,httpResponse)==null){
+            if (tokenService.hasToken(headers, httpResponse) == null) {
                 throw new IllegalArgumentException("Invalid token");
             }
             Category category = categoryService.getCategoryById(id);
@@ -54,9 +56,10 @@ public class CategoryController {
     }
 
     @PutMapping("/category/{id}")
-    public ResponseEntity<Object> updateCategory(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse, @PathVariable Integer id, @RequestBody Category category) {
+    public ResponseEntity<Object> updateCategory(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse,
+            @PathVariable Integer id, @RequestBody Category category) {
         try {
-            if(tokenService.hasToken(headers,httpResponse)==null){
+            if (tokenService.hasToken(headers, httpResponse) == null) {
                 throw new IllegalArgumentException("Invalid token");
             }
             Category existingCategory = categoryService.getCategoryById(id);
@@ -73,9 +76,10 @@ public class CategoryController {
     }
 
     @DeleteMapping("/category/{id}")
-    public ResponseEntity<Object> deleteCategory(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse, @PathVariable Integer id) {
+    public ResponseEntity<Object> deleteCategory(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse,
+            @PathVariable Integer id) {
         try {
-            if(tokenService.hasToken(headers,httpResponse)==null){
+            if (tokenService.hasToken(headers, httpResponse) == null) {
                 throw new IllegalArgumentException("Invalid token");
             }
             Category category = categoryService.getCategoryById(id);
@@ -91,9 +95,10 @@ public class CategoryController {
     }
 
     @PostMapping("/category")
-    public ResponseEntity<Object> createCategory(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse, @RequestBody Category category) {
+    public ResponseEntity<Object> createCategory(@RequestHeader HttpHeaders headers, HttpServletResponse httpResponse,
+            @RequestBody Category category) {
         try {
-            if(tokenService.hasToken(headers,httpResponse)==null){
+            if (tokenService.hasToken(headers, httpResponse) == null) {
                 throw new IllegalArgumentException("Invalid token");
             }
             categoryService.createCategory(category);

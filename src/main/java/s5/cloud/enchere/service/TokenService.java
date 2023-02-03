@@ -55,7 +55,7 @@ public class TokenService {
 
     public Token hasToken(HttpHeaders headers, HttpServletResponse response) throws IOException {
         String token = this.getToken(headers);
-        if(token==null || token.equals("")){
+        if (token == null || token.equals("")) {
             return null;
         }
         token = token.replace("Bearer ", "");
@@ -83,25 +83,28 @@ public class TokenService {
         tokenRepository.delete(currentToken);
     }
 
-    public Token getCurrentToken(Users user) {
+    public Token getCurrentToken(Users user, boolean showuser) {
         Token currentToken = findTokenByIdadministrator(user.getId());
         if (currentToken != null) {
-             currentToken.setUsers(null);
-             currentToken.setId(null);
-             return currentToken;
+            currentToken.setId(null);
+            return currentToken;
         }
         currentToken = new Token();
-        String token = TokenService.generateToken(user.getEmail(),user.getPassword());
+        String token = TokenService.generateToken(user.getEmail(), user.getPassword());
         currentToken.setUsers(user);
         currentToken.setValue(token);
         currentToken.setCreation_date(new Date());
         currentToken.setExpiration_date(new Date(new Date().getTime() + Token.EXPIRATION));
         currentToken.setId(getSequenceValue());
         save(currentToken);
-        currentToken.setUsers(null);
+        if (!showuser) {
+            currentToken.setUsers(null);
+        }
+        // currentToken.setUsers(null);
         currentToken.setId(null);
         return currentToken;
-   }
+    }
+
     public void deleteToken(Token currentToken) {
         tokenRepository.delete(currentToken);
     }

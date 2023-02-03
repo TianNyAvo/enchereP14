@@ -39,9 +39,7 @@ public class UserService extends CrudService<Users, UserRepo> implements Service
           return founduser;
      }
 
-    
-
-     public Users inscriptionCustomer(Users entity) throws LoginException, CustomException, Exception {
+     private void checkUser(Users entity) throws LoginException, CustomException, Exception {
           if (entity.getFirstname() == null || entity.getFirstname().equals("")) {
                throw new LoginException("First name is required");
           }
@@ -65,12 +63,37 @@ public class UserService extends CrudService<Users, UserRepo> implements Service
           if (liste != null && liste.size() > 0) {
                throw new LoginException("Email already used");
           }
+     }
+
+     public Users updateUser(Users origin, Users entity) throws LoginException, CustomException, Exception {
+          if (entity.getFirstname() != null && !entity.getFirstname().equals("")) {
+               origin.setFirstname(entity.getFirstname());
+          }
+          if (entity.getLastname() != null && !entity.getLastname().equals("")) {
+               origin.setLastname(entity.getLastname());
+          }
+          if (entity.getPassword() != null && !entity.getPassword().equals("")) {
+               origin.setPassword(BCrypt.hashPassword(entity.getPassword()));
+          }
+          if (entity.getPhoneNumber() != null && !entity.getPhoneNumber().equals("")) {
+               origin.setPhoneNumber(entity.getPhoneNumber());
+          }
+          if (entity.getBirthdate() != null) {
+               origin.setBirthdate(entity.getBirthdate());
+          }
+          if (entity.getEmail() != null && !entity.getEmail().equals("")) {
+               origin.setEmail(entity.getEmail());
+          }
+          checkUser(origin);
+          return super.update(origin);
+     }
+
+     public Users inscriptionCustomer(Users entity) throws LoginException, CustomException, Exception {
+          checkUser(entity);
           entity.setPassword(BCrypt.hashPassword(entity.getPassword()));
           entity.setRole(new RoleType(2));
           entity.setJoinedDate(Timestamp.valueOf(LocalDateTime.now()));
           return create(entity);
      }
-
-
 
 }

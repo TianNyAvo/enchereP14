@@ -38,7 +38,6 @@ public class AuctionController {
      @Autowired
      private UserService userS;
 
-     
      @Autowired
      private VAuctionService vauctionS;
 
@@ -88,11 +87,15 @@ public class AuctionController {
                return ResponseEntity.badRequest().body(error);
           }
      }
-     @PostMapping("/encheres/recherche")
-     public ResponseEntity<Object> rechercheEnchere(@RequestBody RechercheAvance crit) {
-          try {
 
-               Success success = new Success(auctionS.findByCriteria(crit), "recherche d'une enchere");
+     @PostMapping("/encheres/recherche/{page}")
+     public ResponseEntity<Object> rechercheEnchere(@RequestBody RechercheAvance crit, @PathVariable int page) {
+          try {
+               List<Auction> auctions = auctionS.findByCriteria(crit, page);
+               if (auctions.size() == 0) {
+                    throw new Exception("Aucun résultat n'a été trouvé");
+               }
+               Success success = new Success(auctions, "recherche d'une enchere");
                return ResponseEntity.ok().body(success);
           } catch (Exception e) {
                Error error = new Error(400, e.getMessage());
@@ -102,7 +105,8 @@ public class AuctionController {
      }
 
      @PostMapping("/customer/{customerid}/enchere/{enchereid}/offre")
-     public ResponseEntity<Object> encherir(@PathVariable int customerid, @PathVariable int enchereid, @RequestBody AuctionOperation operation,
+     public ResponseEntity<Object> encherir(@PathVariable int customerid, @PathVariable int enchereid,
+               @RequestBody AuctionOperation operation,
                @RequestHeader HttpHeaders headers, HttpServletResponse httpResponse) {
           try {
                if (tokenS.hasToken(headers, httpResponse) == null) {
@@ -116,7 +120,7 @@ public class AuctionController {
                     throw new Exception("You are not a customer");
                operation.setCustomer(new Users(customerid));
                operation.setAuctionId(enchereid);
-               Success success = new Success(auctionOS.create(operation), "Recharge done");
+               Success success = new Success(auctionOS.create(operation), "Enchérissement terminée");
                return ResponseEntity.ok().body(success);
 
           } catch (Exception e) {
@@ -149,7 +153,6 @@ public class AuctionController {
                return ResponseEntity.badRequest().body(error);
           }
      }
-     
 
      @PutMapping("/customer/{customerid}/enchere/{auctionid}/photo")
      public ResponseEntity<Object> addPhoto(@RequestBody List<Galerie> galerie, @PathVariable int customerid,
@@ -219,4 +222,27 @@ public class AuctionController {
                return ResponseEntity.badRequest().body(error);
           }
      }
+
+     @GetMapping("/encheres/number")
+     public ResponseEntity<Object> getNombrePage() {
+          try {
+               Success success = new Success(vauctionS.countPage(), "Participations aux encheres");
+               return ResponseEntity.ok().body(success);
+          } catch (Exception e) {
+               Error error = new Error(400, e.getMessage());
+               return ResponseEntity.badRequest().body(error);
+          }
+     }
+
+     @PostMapping("/encheres/recherche/number")
+     public ResponseEntity<Object> numberEnchere(@RequestBody RechercheAvance crit) {
+          try {
+               Success success = new Success(auctionS.countByCriteria(crit), "Participations aux encheres");
+               return ResponseEntity.ok().body(success);
+          } catch (Exception e) {
+               Error error = new Error(400, e.getMessage());
+               return ResponseEntity.badRequest().body(error);
+          }
+     }
+
 }
