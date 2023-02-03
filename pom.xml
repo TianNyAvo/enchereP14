@@ -81,6 +81,8 @@
         <dependency>
             <groupId>com.google.firebase</groupId>
             <artifactId>Firebase-admin</artifactId>
+            <scope>system</scope>
+            <systemPath>${basedir}/lib/firebase-admin-7.0.0.jar</systemPath>
             <version>7.0.0</version>
         </dependency>
     </dependencies>
